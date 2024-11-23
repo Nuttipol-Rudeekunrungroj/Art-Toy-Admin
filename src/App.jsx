@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from "react-router-dom";
+import AuthLayout from "./components/auth/layout";
+import AuthLogin from "./pages/auth/login";
+import AdminLayout from "./components/admin-view/layout";
+import AdminDashboard from "./pages/admin-view/dashboard";
+import Adminproducts from "./pages/admin-view/products";
+import AdminOrders from "./pages/admin-view/orders";
+import CheckAuth from "./components/common/check-auth";
+import UnauthPage from "./pages/unauth-page";
+import NotFound from "./pages/not-found";
 
 function App() {
-  const [count, setCount] = useState(0)
 
+  const isAuthenticated = true;
+  const user = {
+    name : 'Nut',
+    role : 'user'
+  }
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="flex flex-col overflow-hidden bg-white">
+      
+      <Routes>
+        <Route path="/auth" element={
+          <CheckAuth isAuthenticated={isAuthenticated} user = {user}>
+          <AuthLayout />
+          </CheckAuth>
+          }>
+          <Route path="login" element={<AuthLogin />} />
+        </Route>
+
+        <Route path="/admin" element={
+          <CheckAuth isAuthenticated={isAuthenticated} user = {user}>
+          <AdminLayout />
+          </CheckAuth>
+          }>
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="products" element={<Adminproducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+        </Route>
+
+        <Route path="*" element={<NotFound/>}/>
+        <Route path="/unauth-page" element={<UnauthPage/>}/>
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;

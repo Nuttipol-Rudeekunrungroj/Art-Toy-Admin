@@ -42,6 +42,7 @@ function AdminProducts() {
         console.log(data, "edit");
         if(data?.payload?.success){
           dispatch(fetchAllProducts())
+          setOpenCreateProductsDialog(false);
           setImageFile(null);
           setFormData(initialFormData)
           toast({

@@ -11,7 +11,7 @@ import CommonForm from "@/components/common/form";
 import { addProductFormElements } from "@/config";
 import ProductImageUpload from "@/components/admin-view/image-upload";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewProduct, editProduct, fetchAllProducts } from "@/store/admin/products-slice";
+import { addNewProduct, deleteProduct, editProduct, fetchAllProducts } from "@/store/admin/products-slice";
 import { useToast } from "@/hooks/use-toast";
 import AdminProductTile from "@/components/admin-view/product-tile";
 
@@ -74,6 +74,15 @@ function AdminProducts() {
     });
   }
 
+  function handleDelete (getCurrentProductId){
+    console.log(getCurrentProductId);
+    dispatch(deleteProduct(getCurrentProductId)).then(data=>{
+      if(data?.payload?.success){
+        dispatch(fetchAllProducts());
+      }
+    })
+  }
+
   function isFormValid() {
     return Object.keys(formData)
       .map((key) => formData[key] !== "")
@@ -102,6 +111,7 @@ function AdminProducts() {
               setOpenCreateProductsDialog={setOpenCreateProductsDialog}
                 setCurrentEditedId={setCurrentEditedId}
                 product={productItem}
+                handleDelete = {handleDelete}
               />
             ))
           : null}

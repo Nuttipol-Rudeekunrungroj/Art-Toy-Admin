@@ -34,9 +34,20 @@ console.log(isLoading,user)
 
   return (
     <div className="flex flex-col overflow-hidden bg-white">
+
       
       <Routes>
-        <Route path="/auth" element={
+      <Route
+          path="/"
+          element={
+            <CheckAuth
+              isAuthenticated={isAuthenticated}
+              
+            ></CheckAuth>
+          }
+        />
+      <Route path="/auth" element={
+        
           <CheckAuth isAuthenticated={isAuthenticated} user = {user}>
           <AuthLayout />
           </CheckAuth>

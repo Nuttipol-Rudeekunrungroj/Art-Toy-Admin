@@ -9,6 +9,7 @@ const initialState = {
 
 export const registerUser = createAsyncThunk(
   "/auth/register",
+  
 
   async (formData) => {
     const response = await axios.post(

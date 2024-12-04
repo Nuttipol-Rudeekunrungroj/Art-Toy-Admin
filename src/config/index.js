@@ -100,7 +100,34 @@ export const registerFormControls = [
     },
   ];
   
-
+  export const filterOptions = {
+    category: [
+      { id: "Art Toy", label: "Art Toy" },
+      { id: "Hero", label: "Hero" },
+  
+    ],
+    materials: [
+      { id: "Granit", label: "Granit" },
+        { id: "Wood", label: "Wood" },
+        { id: "Polyester", label: "Polyester" },
+        { id: "Abs", label: "Abs" },
+        { id: "Metal", label: "Metal" },
+    ],
+    product_type: [
+      { id: "Accessory", label: "Accessory" },
+      { id: "Figurine", label: "Figurine" },
+      { id: "Diy", label: "Diy" },
+      { id: "Model Kit", label: "Model Kit" },
+      
+    ],
+  };
+  
+  export const sortOptions = [
+    { id: "price-lowtohigh", label: "Price: Low to High" },
+    { id: "price-hightolow", label: "Price: High to Low" },
+    { id: "name-atoz", label: "Name: A to Z" },
+    { id: "name-ztoa", label: "Name: Z to A" },
+  ];
 
 
 //   Categories: [ 'Art Toy', 'Hero' ]

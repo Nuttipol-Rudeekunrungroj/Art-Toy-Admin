@@ -14,6 +14,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addNewProduct, deleteProduct, editProduct, fetchAllProducts } from "@/store/admin/products-slice";
 import { useToast } from "@/hooks/use-toast";
 import AdminProductTile from "@/components/admin-view/product-tile";
+import ProductFilter from "@/components/admin-view/filter";
+import { DropdownMenu,DropdownMenuContent,DropdownMenuRadioGroup,DropdownMenuRadioItem,DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ArrowUpDownIcon } from "lucide-react";
+import { sortOptions } from "@/config";
 
 const initialFormData = {
   name: "",
@@ -98,10 +102,36 @@ function AdminProducts() {
   return (
     <Fragment>
       <div className="mb-5 w-full flex justify-end">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline"
+                  size="sm"
+                  className="flex items-center gap-1">
+            <ArrowUpDownIcon className="h-4 w-4" />
+            <span>Sort by</span>
+            </Button>
+
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-[200px]">
+            <DropdownMenuRadioGroup>
+              {
+                sortOptions.map(sortItem => <DropdownMenuRadioItem key={sortItem.id}>
+                  {sortItem.label}
+                </DropdownMenuRadioItem>)
+              }
+
+            </DropdownMenuRadioGroup>
+
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+
         <Button onClick={() => setOpenCreateProductsDialog(true)}>
           Add New Product
         </Button>
       </div>
+      <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
+      <ProductFilter/>
 
       <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {productList && productList.length > 0
@@ -115,6 +145,7 @@ function AdminProducts() {
               />
             ))
           : null}
+      </div>
       </div>
       <Sheet
         open={openCreateProductsDialog}

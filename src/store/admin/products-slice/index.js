@@ -32,6 +32,23 @@ const initialState = {
         }
       );
 
+      export const fetchAllFilteredProducts = createAsyncThunk(
+        "/products/fetchAllFilteredProducts",
+        async ({ filterParams, sortParams }) => {
+          
+          const query = new URLSearchParams({
+            ...filterParams,
+            sortBy: sortParams,
+          });
+          
+          const result = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/admin/products/get?${query}`
+          );
+      
+          return result?.data;
+        }
+      );
+
       export const editProduct = createAsyncThunk(
         "/products/editProduct",
         async ({ id, formData }) => {
@@ -48,6 +65,8 @@ const initialState = {
           return result?.data;
         }
       );
+
+      
 
       export const deleteProduct = createAsyncThunk(
         "/products/deleteProduct",
@@ -77,6 +96,17 @@ const AdminProductsSlice = createSlice({
         state.productList = action.payload.data;
       })
       .addCase(fetchAllProducts.rejected, (state, action) => {
+        state.isLoading = false;
+        state.productList = [];
+      })
+      .addCase(fetchAllFilteredProducts.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllFilteredProducts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.productList = action.payload.data;
+      })
+      .addCase(fetchAllFilteredProducts.rejected, (state, action) => {
         state.isLoading = false;
         state.productList = [];
       });

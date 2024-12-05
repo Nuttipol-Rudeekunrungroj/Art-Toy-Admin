@@ -11,13 +11,42 @@ import CommonForm from "@/components/common/form";
 import { addProductFormElements } from "@/config";
 import ProductImageUpload from "@/components/admin-view/image-upload";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewProduct, deleteProduct, editProduct, fetchAllProducts } from "@/store/admin/products-slice";
+import {
+  addNewProduct,
+  deleteProduct,
+  editProduct,
+  fetchAllProducts,
+} from "@/store/admin/products-slice";
 import { useToast } from "@/hooks/use-toast";
 import AdminProductTile from "@/components/admin-view/product-tile";
 import ProductFilter from "@/components/admin-view/filter";
-import { DropdownMenu,DropdownMenuContent,DropdownMenuRadioGroup,DropdownMenuRadioItem,DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ArrowUpDownIcon } from "lucide-react";
 import { sortOptions } from "@/config";
+import { fetchAllFilteredProducts } from "@/store/admin/products-slice";
+import { useSearchParams } from "react-router-dom";
+
+function createSearchParamsHelper(filterParams){
+  const queryParams = [];
+
+  for (const [key, value] of Object.entries(filterParams)) {
+    if (Array.isArray(value) && value.length > 0) {
+      const paramValue = value.join(",");
+
+      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+    }
+
+}
+console.log(queryParams, "queryParams");
+
+return queryParams.join("&");
+}
 
 const initialFormData = {
   name: "",
@@ -40,51 +69,79 @@ function AdminProducts() {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [filters, setFilters] = useState({});
+  const [sort, setSort] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  function handleSort(value) {
+    setSort(value);
+  }
+
+  function handleFilter(getSectionId, getCurrentOption) {
+    let cpyFilters = { ...filters };
+    const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+    if (indexOfCurrentSection === -1) {
+      cpyFilters = {
+        ...cpyFilters,
+        [getSectionId]: [getCurrentOption],
+      };
+    } else {
+      const indexOfCurrentOption =
+        cpyFilters[getSectionId].indexOf(getCurrentOption);
+      if (indexOfCurrentOption === -1)
+        cpyFilters[getSectionId].push(getCurrentOption);
+      else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
+    }
+
+    console.log(cpyFilters);
+    setFilters(cpyFilters);
+    sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
+  }
 
   function onSubmit(event) {
     event.preventDefault();
     currentEditedId !== null
-    ? dispatch(
-      editProduct({
-        id: currentEditedId,
-        formData
-      })
-    ).then((data) => {
-      console.log(data, "edit");
+      ? dispatch(
+          editProduct({
+            id: currentEditedId,
+            formData,
+          })
+        ).then((data) => {
+          console.log(data, "edit");
 
-      if (data?.payload?.success) {
-        dispatch(fetchAllProducts());
-        setFormData(initialFormData);
-        setOpenCreateProductsDialog(false);
-        setCurrentEditedId(null);
-      }
-    })
-  : dispatch(
-      addNewProduct({
-        ...formData,
-        image: uploadedImageUrl,
-      })
-    ).then((data) => {
-      console.log(data, "edit");
-      if (data?.payload?.success) {
-        dispatch(fetchAllProducts());
-        setOpenCreateProductsDialog(false);
-        setImageFile(null);
-        setFormData(initialFormData);
-        toast({
-          title: "product add successfuly",
+          if (data?.payload?.success) {
+            dispatch(fetchAllProducts());
+            setFormData(initialFormData);
+            setOpenCreateProductsDialog(false);
+            setCurrentEditedId(null);
+          }
+        })
+      : dispatch(
+          addNewProduct({
+            ...formData,
+            image: uploadedImageUrl,
+          })
+        ).then((data) => {
+          console.log(data, "edit");
+          if (data?.payload?.success) {
+            dispatch(fetchAllProducts());
+            setOpenCreateProductsDialog(false);
+            setImageFile(null);
+            setFormData(initialFormData);
+            toast({
+              title: "product add successfuly",
+            });
+          }
         });
-      }
-    });
   }
 
-  function handleDelete (getCurrentProductId){
+  function handleDelete(getCurrentProductId) {
     console.log(getCurrentProductId);
-    dispatch(deleteProduct(getCurrentProductId)).then(data=>{
-      if(data?.payload?.success){
+    dispatch(deleteProduct(getCurrentProductId)).then((data) => {
+      if (data?.payload?.success) {
         dispatch(fetchAllProducts());
       }
-    })
+    });
   }
 
   function isFormValid() {
@@ -97,55 +154,75 @@ function AdminProducts() {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  console.log(formData, "productList");
+  useEffect(() => {
+    if (filters !== null && sort !== null)
+    dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+  }, [dispatch, sort, filters]);
+
+  useEffect(() => {
+    setSort("price-lowtohigh");
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+  }, []);
+
+  useEffect(() => {
+    if (filters && Object.keys(filters).length > 0) {
+      const createQueryString = createSearchParamsHelper(filters);
+      setSearchParams(new URLSearchParams(createQueryString));
+    }
+  }, [filters]);
+
+  console.log(formData,searchParams, "productList");
 
   return (
     <Fragment>
       <div className="mb-5 w-full flex justify-end">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline"
-                  size="sm"
-                  className="flex items-center gap-1">
-            <ArrowUpDownIcon className="h-4 w-4" />
-            <span>Sort by</span>
-            </Button>
-
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[200px]">
-            <DropdownMenuRadioGroup>
-              {
-                sortOptions.map(sortItem => <DropdownMenuRadioItem key={sortItem.id}>
-                  {sortItem.label}
-                </DropdownMenuRadioItem>)
-              }
-
-            </DropdownMenuRadioGroup>
-
-          </DropdownMenuContent>
-        </DropdownMenu>
-
+        <div className="flex items-center gap-3">
+          <span className="text-muted-foreground">
+            {productList?.length} Products
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+              >
+                <ArrowUpDownIcon className="h-4 w-4" />
+                <span>Sort by</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-[200px]">
+              <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
+                {sortOptions.map((sortItem) => (
+                  <DropdownMenuRadioItem value={sortItem.id} key={sortItem.id}>
+                    {sortItem.label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
         <Button onClick={() => setOpenCreateProductsDialog(true)}>
           Add New Product
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-      <ProductFilter/>
+        <ProductFilter filters={filters} handleFilter={handleFilter} />
 
-      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-        {productList && productList.length > 0
-          ? productList.map((productItem) => (
-              <AdminProductTile
-              setFormData = {setFormData}
-              setOpenCreateProductsDialog={setOpenCreateProductsDialog}
-                setCurrentEditedId={setCurrentEditedId}
-                product={productItem}
-                handleDelete = {handleDelete}
-              />
-            ))
-          : null}
-      </div>
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+          {productList && productList.length > 0
+            ? productList.map((productItem) => (
+                <AdminProductTile
+                  setFormData={setFormData}
+                  setOpenCreateProductsDialog={setOpenCreateProductsDialog}
+                  setCurrentEditedId={setCurrentEditedId}
+                  product={productItem}
+                  handleDelete={handleDelete}
+                />
+              ))
+            : null}
+        </div>
       </div>
       <Sheet
         open={openCreateProductsDialog}
@@ -158,8 +235,8 @@ function AdminProducts() {
         <SheetContent side="right" className="overflow-auto">
           <SheetHeader>
             <SheetTitle>
-            {currentEditedId !== null ? "Edit Product" : "Add New Product"}
-              </SheetTitle>
+              {currentEditedId !== null ? "Edit Product" : "Add New Product"}
+            </SheetTitle>
 
             <SheetDescription>
               Fill out the form below to add a new product

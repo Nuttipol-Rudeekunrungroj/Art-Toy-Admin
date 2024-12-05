@@ -99,6 +99,32 @@ export const registerFormControls = [
       placeholder: "Enter product description",
     },
   ];
+
+  export const categoryOptionsMap = {
+    'Art Toy': "Art Toy" ,
+    Hero : "Hero" ,
+    
+  };
+
+  export const materialsOptionsMap = {
+    Granit: "Granit" ,
+        Wood: "Wood" ,
+        Polyester: "Polyester" ,
+        Abs: "Abs" ,
+       Metal: "Metal" ,
+    
+  };
+
+  export const product_typeOptionsMap = {
+    Accessory: "Accessory" ,
+      Figurine: "Figurine" ,
+      Diy: "Diy" ,
+      'Model Kit': "ModelKit" ,
+    
+  };
+
+
+
   
   export const filterOptions = {
     category: [

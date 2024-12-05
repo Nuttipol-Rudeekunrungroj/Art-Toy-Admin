@@ -42,7 +42,7 @@ const initialState = {
           });
           
           const result = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/admin/products/get?${query}`
+            `${import.meta.env.VITE_API_URL}/api/admin/products/get/filtered?${query}`
           );
       
           return result?.data;

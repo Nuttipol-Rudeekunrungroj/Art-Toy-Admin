@@ -32,6 +32,8 @@ import { sortOptions } from "@/config";
 import { fetchAllFilteredProducts } from "@/store/admin/products-slice";
 import { useSearchParams } from "react-router-dom";
 
+const initialSort = null; const initialFilters ={};
+
 function createSearchParamsHelper(filterParams){
   const queryParams = [];
 
@@ -69,8 +71,8 @@ function AdminProducts() {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const [currentEditedId, setCurrentEditedId] = useState(null);
-  const [filters, setFilters] = useState({});
-  const [sort, setSort] = useState(null);
+  const [filters, setFilters] = useState(initialFilters);
+  const [sort, setSort] = useState(initialSort);
   const [searchParams, setSearchParams] = useSearchParams()
 
   function handleSort(value) {
@@ -98,6 +100,17 @@ function AdminProducts() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
+  
+
+  function resetFiltersAndSort() { 
+    
+    setFilters(initialFilters); 
+    setSort(initialSort); 
+    sessionStorage.removeItem("filters");
+    setSearchParams(new URLSearchParams);
+    window.location.reload();
+  }
+
   function onSubmit(event) {
     event.preventDefault();
     currentEditedId !== null
@@ -114,6 +127,7 @@ function AdminProducts() {
             setFormData(initialFormData);
             setOpenCreateProductsDialog(false);
             setCurrentEditedId(null);
+            resetFiltersAndSort();
           }
         })
       : dispatch(
@@ -125,9 +139,11 @@ function AdminProducts() {
           console.log(data, "edit");
           if (data?.payload?.success) {
             dispatch(fetchAllProducts());
+          
             setOpenCreateProductsDialog(false);
             setImageFile(null);
             setFormData(initialFormData);
+            resetFiltersAndSort();
             toast({
               title: "product add successfuly",
             });
@@ -140,6 +156,7 @@ function AdminProducts() {
     dispatch(deleteProduct(getCurrentProductId)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllProducts());
+        resetFiltersAndSort();
       }
     });
   }
@@ -155,13 +172,8 @@ function AdminProducts() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (filters !== null && sort !== null)
-    dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
-  }, [dispatch, sort, filters]);
-
-  useEffect(() => {
     setSort("price-lowtohigh");
-    setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
+    setFilters(JSON.parse(sessionStorage.getItem("filters")) || initialFilters);
   }, []);
 
   useEffect(() => {
@@ -170,6 +182,15 @@ function AdminProducts() {
       setSearchParams(new URLSearchParams(createQueryString));
     }
   }, [filters]);
+
+  useEffect(() => {
+    if (filters !== null && sort !== null)
+    dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+  }, [dispatch, sort, filters]);
+
+  
+
+  
 
   console.log(formData,searchParams, "productList");
 
@@ -210,10 +231,11 @@ function AdminProducts() {
       <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
         <ProductFilter filters={filters} handleFilter={handleFilter} />
 
-        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4" >
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <AdminProductTile
+                key={productItem.id}
                   setFormData={setFormData}
                   setOpenCreateProductsDialog={setOpenCreateProductsDialog}
                   setCurrentEditedId={setCurrentEditedId}

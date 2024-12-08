@@ -60,7 +60,7 @@ export const registerFormControls = [
       name: "category",
       componentType: "select",
       options: [
-        { id: "Art Toy", label: "Art Toy" },
+        { id: "ArtToy", label: "ArtToy" },
         { id: "Hero", label: "Hero" },
       ],
     },
@@ -101,7 +101,7 @@ export const registerFormControls = [
   ];
 
   export const categoryOptionsMap = {
-    'Art Toy': "Art Toy" ,
+    ArtToy: "ArtToy" ,
     Hero : "Hero" ,
     
   };
@@ -128,7 +128,7 @@ export const registerFormControls = [
   
   export const filterOptions = {
     category: [
-      { id: "Art Toy", label: "Art Toy" },
+      { id: "ArtToy", label: "ArtToy" },
       { id: "Hero", label: "Hero" },
   
     ],

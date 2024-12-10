@@ -22,7 +22,6 @@ const initialState = {
     async (id) => {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/admin/orders/details/${id}`
-
       );
   
       return response.data;
@@ -42,6 +41,7 @@ const initialState = {
       return response.data;
     }
   );
+  
 
 const adminOrderSlice = createSlice({
     name: "adminOrderSlice",
@@ -54,7 +54,6 @@ const adminOrderSlice = createSlice({
     },
   },
  extraReducers: (builder) => {
-
     builder
       .addCase(getAllOrdersForAdmin.pending, (state) => {
         state.isLoading = true;

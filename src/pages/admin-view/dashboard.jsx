@@ -1,17 +1,15 @@
+
+
+import React from 'react';
+
 function AdminDashboard() {
   return (
-    <div>
-      <div>admin dashboard</div>
-      <div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="text-xl font-bold mb-4">Admin Dashboard</div>
+      
+      <div className="w-full max-w-screen-lg h-full">
         <iframe
-          style={{
-            background: '#F1F5F4',
-            border: 'none',
-            borderRadius: '2px',
-            boxShadow: '0 2px 10px 0 rgba(70, 76, 79, .2)',
-            width: '100vw',
-            height: '100vh',
-          }}
+          className="bg-gray-200 border-none rounded shadow-lg w-full h-[75vh] md:h-[90vh]"
           src="https://charts.mongodb.com/charts-art-toy-trexblackhole-dmuqhqc/embed/dashboards?id=6751762d-a4c4-474d-8d60-3dc07b36f0f3&theme=light&autoRefresh=true&maxDataAge=3600&showTitleAndDesc=false&scalingWidth=fixed&scalingHeight=fixed"
           title="MongoDB Dashboard"
         />
@@ -21,6 +19,8 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard;
+
+
 
 
 

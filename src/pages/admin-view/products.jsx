@@ -106,7 +106,7 @@ function AdminProducts() {
     
     setFilters(initialFilters); 
     setSort(initialSort); 
-    sessionStorage.removeItem("filters");
+    // sessionStorage.removeItem("filters");
     setSearchParams(new URLSearchParams);
     window.location.reload();
   }

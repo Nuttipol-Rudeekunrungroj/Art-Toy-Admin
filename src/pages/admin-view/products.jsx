@@ -19,36 +19,36 @@ import {
 } from "@/store/admin/products-slice";
 import { useToast } from "@/hooks/use-toast";
 import AdminProductTile from "@/components/admin-view/product-tile";
-import ProductFilter from "@/components/admin-view/filter";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ArrowUpDownIcon } from "lucide-react";
-import { sortOptions } from "@/config";
-import { fetchAllFilteredProducts } from "@/store/admin/products-slice";
-import { useSearchParams } from "react-router-dom";
+// import ProductFilter from "@/components/admin-view/filter";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuRadioGroup,
+//   DropdownMenuRadioItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { ArrowUpDownIcon } from "lucide-react";
+// import { sortOptions } from "@/config";
+// import { fetchAllFilteredProducts } from "@/store/admin/products-slice";
+// import { useSearchParams } from "react-router-dom";
 
-const initialSort = null; const initialFilters ={};
+// const initialSort = null; const initialFilters ={};
 
-function createSearchParamsHelper(filterParams){
-  const queryParams = [];
+// function createSearchParamsHelper(filterParams){
+//   const queryParams = [];
 
-  for (const [key, value] of Object.entries(filterParams)) {
-    if (Array.isArray(value) && value.length > 0) {
-      const paramValue = value.join(",");
+//   for (const [key, value] of Object.entries(filterParams)) {
+//     if (Array.isArray(value) && value.length > 0) {
+//       const paramValue = value.join(",");
 
-      queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
-    }
+//       queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
+//     }
 
-}
-console.log(queryParams, "queryParams");
+// }
+// console.log(queryParams, "queryParams");
 
-return queryParams.join("&");
-}
+// return queryParams.join("&");
+// }
 
 const initialFormData = {
   name: "",
@@ -71,45 +71,45 @@ function AdminProducts() {
   const dispatch = useDispatch();
   const { toast } = useToast();
   const [currentEditedId, setCurrentEditedId] = useState(null);
-  const [filters, setFilters] = useState(initialFilters);
-  const [sort, setSort] = useState(initialSort);
-  const [searchParams, setSearchParams] = useSearchParams()
+  // const [filters, setFilters] = useState(initialFilters);
+  // const [sort, setSort] = useState(initialSort);
+  // const [searchParams, setSearchParams] = useSearchParams()
 
-  function handleSort(value) {
-    setSort(value);
-  }
+  // function handleSort(value) {
+  //   setSort(value);
+  // }
 
-  function handleFilter(getSectionId, getCurrentOption) {
-    let cpyFilters = { ...filters };
-    const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
-    if (indexOfCurrentSection === -1) {
-      cpyFilters = {
-        ...cpyFilters,
-        [getSectionId]: [getCurrentOption],
-      };
-    } else {
-      const indexOfCurrentOption =
-        cpyFilters[getSectionId].indexOf(getCurrentOption);
-      if (indexOfCurrentOption === -1)
-        cpyFilters[getSectionId].push(getCurrentOption);
-      else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
-    }
+  // function handleFilter(getSectionId, getCurrentOption) {
+  //   let cpyFilters = { ...filters };
+  //   const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
+  //   if (indexOfCurrentSection === -1) {
+  //     cpyFilters = {
+  //       ...cpyFilters,
+  //       [getSectionId]: [getCurrentOption],
+  //     };
+  //   } else {
+  //     const indexOfCurrentOption =
+  //       cpyFilters[getSectionId].indexOf(getCurrentOption);
+  //     if (indexOfCurrentOption === -1)
+  //       cpyFilters[getSectionId].push(getCurrentOption);
+  //     else cpyFilters[getSectionId].splice(indexOfCurrentOption, 1);
+  //   }
 
-    console.log(cpyFilters);
-    setFilters(cpyFilters);
-    sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
-  }
+  //   console.log(cpyFilters);
+  //   setFilters(cpyFilters);
+  //   sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
+  // }
 
   
 
-  function resetFiltersAndSort() { 
+  // function resetFiltersAndSort() { 
     
-    setFilters(initialFilters); 
-    setSort(initialSort); 
-    // sessionStorage.removeItem("filters");
-    setSearchParams(new URLSearchParams);
-    window.location.reload();
-  }
+  //   setFilters(initialFilters); 
+  //   setSort(initialSort); 
+  //   sessionStorage.removeItem("filters");
+  //   setSearchParams(new URLSearchParams);
+  //   window.location.reload();
+  // }
 
   function onSubmit(event) {
     event.preventDefault();
@@ -127,7 +127,7 @@ function AdminProducts() {
             setFormData(initialFormData);
             setOpenCreateProductsDialog(false);
             setCurrentEditedId(null);
-            resetFiltersAndSort();
+            // resetFiltersAndSort();
           }
         })
       : dispatch(
@@ -143,7 +143,7 @@ function AdminProducts() {
             setOpenCreateProductsDialog(false);
             setImageFile(null);
             setFormData(initialFormData);
-            resetFiltersAndSort();
+            // resetFiltersAndSort();
             toast({
               title: "product add successfuly",
             });
@@ -156,7 +156,7 @@ function AdminProducts() {
     dispatch(deleteProduct(getCurrentProductId)).then((data) => {
       if (data?.payload?.success) {
         dispatch(fetchAllProducts());
-        resetFiltersAndSort();
+        // resetFiltersAndSort();
       }
     });
   }
@@ -171,33 +171,33 @@ function AdminProducts() {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  useEffect(() => {
-    setSort("price-lowtohigh");
-    setFilters(JSON.parse(sessionStorage.getItem("filters")) || initialFilters);
-  }, []);
+  // useEffect(() => {
+  //   setSort("price-lowtohigh");
+  //   setFilters(JSON.parse(sessionStorage.getItem("filters")) || initialFilters);
+  // }, []);
 
-  useEffect(() => {
-    if (filters && Object.keys(filters).length > 0) {
-      const createQueryString = createSearchParamsHelper(filters);
-      setSearchParams(new URLSearchParams(createQueryString));
-    }
-  }, [filters]);
+  // useEffect(() => {
+  //   if (filters && Object.keys(filters).length > 0) {
+  //     const createQueryString = createSearchParamsHelper(filters);
+  //     setSearchParams(new URLSearchParams(createQueryString));
+  //   }
+  // }, [filters]);
 
-  useEffect(() => {
-    if (filters !== null && sort !== null)
-    dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
-  }, [dispatch, sort, filters]);
-
-  
+  // useEffect(() => {
+  //   if (filters !== null && sort !== null)
+  //   dispatch(fetchAllFilteredProducts({ filterParams: filters, sortParams: sort }));
+  // }, [dispatch, sort, filters]);
 
   
 
-  console.log(formData,searchParams, "productList");
+  
+
+  // console.log(formData,searchParams, "productList");
 
   return (
     <Fragment>
       <div className="mb-5 w-full flex justify-end">
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <span className="text-muted-foreground">
             {productList?.length} Products
           </span>
@@ -222,14 +222,14 @@ function AdminProducts() {
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </div> */}
 
         <Button onClick={() => setOpenCreateProductsDialog(true)}>
           Add New Product
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-        <ProductFilter filters={filters} handleFilter={handleFilter} />
+      {/* <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6"> */}
+        {/* <ProductFilter filters={filters} handleFilter={handleFilter} /> */}
 
         <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4" >
           {productList && productList.length > 0
@@ -245,7 +245,7 @@ function AdminProducts() {
               ))
             : null}
         </div>
-      </div>
+      {/* </div> */}
       <Sheet
         open={openCreateProductsDialog}
         onOpenChange={() => {

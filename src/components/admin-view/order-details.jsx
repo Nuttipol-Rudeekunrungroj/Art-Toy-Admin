@@ -69,7 +69,7 @@ function AdminOrderDetailsView({orderDetails}) {
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Payment Status</p>
-            <Label>{orderDetails?.paymentStatus}</Label>
+            <Label>{orderDetails?.paymentStatus ? "Paid": "Pending"}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Status</p>
@@ -96,7 +96,7 @@ function AdminOrderDetailsView({orderDetails}) {
               {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
                 ? orderDetails?.cartItems.map((item) => (
                     <li className="flex items-center justify-between">
-                      <span>Title: {item.title}</span>
+                      <span>Title: {item.name}</span>
                       <span>Quantity: {item.quantity}</span>
                       <span>Price: ${item.price}</span>
                     </li>

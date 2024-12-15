@@ -93,8 +93,8 @@ function AdminOrderDetailsView({orderDetails}) {
           <div className="grid gap-2">
             <div className="font-medium">Order Details</div>
             <ul className="grid gap-3">
-              {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
-                ? orderDetails?.cartItems.map((item) => (
+              {orderDetails?.items && orderDetails?.items.length > 0
+                ? orderDetails?.items.map((item) => (
                     <li className="flex items-center justify-between">
                       <span>Title: {item.name}</span>
                       <span>Quantity: {item.quantity}</span>
@@ -110,11 +110,11 @@ function AdminOrderDetailsView({orderDetails}) {
             <div className="font-medium">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground">
               <span>{user.userName}</span>
-              <span>{orderDetails?.addressInfo?.address}</span>
-              <span>{orderDetails?.addressInfo?.city}</span>
-              <span>{orderDetails?.addressInfo?.pincode}</span>
-              <span>{orderDetails?.addressInfo?.phone}</span>
-              <span>{orderDetails?.addressInfo?.notes}</span>
+              <span>{orderDetails?.address?.fullname}</span>
+              <span>{orderDetails?.address?.phoneNumber}</span>
+              <span>{orderDetails?.address?.province}</span>
+              <span>{orderDetails?.address?.zipcode}</span>
+              <span>{orderDetails?.address?.notes}</span>
             </div>
           </div>
         </div>
